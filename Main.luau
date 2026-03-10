@@ -1,4 +1,3 @@
---@Yarik_superpro
 local HttpService = game:GetService("HttpService")
 local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
@@ -6,12 +5,12 @@ local table_create = table.create
 local cframe_zero = CFrame.new(0,0,0)
 
 
-local PriorityTable = require(script:WaitForChild("Priority"))
-local ConvertToTable = require(script:WaitForChild("ConvertToTable"))
-local AutoGetMotor6D = require(script:WaitForChild("AutoGetMotor6D"))
-local GetFrameInBetween = require(script:WaitForChild("GetFrameInBetween"))
-local GroupTamplate = script:WaitForChild("GroupTamplate")
-local ReturnableTypes = require(script:WaitForChild("ReturnableTypes"))
+local PriorityTable = loadstring(game:HttpGet("https://raw.githubusercontent.com/NotXz3l/AnimationModule/refs/heads/main/Priority.luau"))()
+local ConvertToTable = loadstring(game:HttpGet("https://raw.githubusercontent.com/NotXz3l/AnimationModule/refs/heads/main/ConvertToTable.luau"))()
+local AutoGetMotor6D = loadstring(game:HttpGet("https://raw.githubusercontent.com/NotXz3l/AnimationModule/refs/heads/main/AutoGetMotor6D.luau"))()
+local GetFrameInBetween = loadstring(game:HttpGet("https://raw.githubusercontent.com/NotXz3l/AnimationModule/refs/heads/main/GetFrameInBetween.luau"))()
+local GroupTamplate = loadstring(game:HttpGet("https://raw.githubusercontent.com/NotXz3l/AnimationModule/refs/heads/main/GroupTemplate.luau"))()
+local ReturnableTypes = loadstring(game:HttpGet("https://raw.githubusercontent.com/NotXz3l/AnimationModule/refs/heads/main/Priority.luau"))()
 
 type AnimType = ReturnableTypes.AnimationSequance
 type SettingsType = ReturnableTypes.Setting
