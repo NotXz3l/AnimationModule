@@ -17,7 +17,33 @@ type SettingsType = ReturnableTypes.Setting
 type Motor6DorBones = "Motor6D"|"Bone"|nil
 export type AT = AnimType
 
+-- At the top of the module, after the requires:
+local activeInstances = {}
 
+local function CleanupInstance(self)
+    if self == nil then return end
+    pcall(function()
+        self:Cancel(true)
+        if self["_fireEnded"] then self["_fireEnded"]:Destroy() end
+        if self["_fireStopped"] then self["_fireStopped"]:Destroy() end
+        if self["_fireDidLoop"] then self["_fireDidLoop"]:Destroy() end
+        if self["_fireEvent"] then self["_fireEvent"]:Destroy() end
+        if self["_Connection"] then self["_Connection"]:Disconnect() end
+        if self["Task"] and typeof(self["Task"]) == "thread" then
+            coroutine.close(self["Task"])
+        end
+        if self["Group"] and self["DataID"] then
+            self["Group"]["i"][self["DataID"]] = nil
+        end
+    end)
+end
+
+local function CleanupAll()
+    for id, inst in pairs(activeInstances) do
+        CleanupInstance(inst)
+        activeInstances[id] = nil
+    end
+end
 
 local function ReturnValuesThatFound(tab,val)
 	local a = {}
@@ -314,7 +340,48 @@ function module.new(Motor6DTable:Model|{},KeyFrameSequance:KeyframeSequence|{},A
 		self.DataID = id
 		
 		AnimationGroup["i"][id] = self
-		
+
+-- Register instance
+    local instanceID = HttpService:GenerateGUID(false)
+    activeInstances[instanceID] = self
+
+    -- Detect the humanoid/character for cleanup hooks
+    local function BindCleanupToCharacter(motor6DTable)
+        local character = nil
+
+        -- Walk up from any Motor6D to find the Model
+        for _, motor in pairs(motor6DTable) do
+            if typeof(motor) == "Instance" then
+                local ancestor = motor:FindFirstAncestorOfClass("Model")
+                if ancestor then
+                    character = ancestor
+                    break
+                end
+            end
+        end
+
+        if character == nil then return end
+
+        local humanoid = character:FindFirstChildOfClass("Humanoid")
+
+        -- On death
+        if humanoid then
+            humanoid.Died:Connect(function()
+                CleanupInstance(self)
+                activeInstances[instanceID] = nil
+            end)
+        end
+
+        -- On character removed from workspace (respawn / re-execution)
+        character.AncestryChanged:Connect(function(_, newParent)
+            if newParent == nil then
+                CleanupInstance(self)
+                activeInstances[instanceID] = nil
+            end
+        end)
+    end
+
+    BindCleanupToCharacter(self["Motor6D"])
 		
 		return AnimationGroup["i"][id],id
 	else
@@ -371,11 +438,18 @@ function module:UnFreeze()
 end
 
 function module:Destroy()
-	self:Cancel()
-	if self.Group then
-		self.Group[self.DataID] = nil
-	end
-	self = nil
+    self:Cancel()
+    if self.Group and self.DataID then
+        self.Group["i"][self.DataID] = nil
+    end
+    -- Remove from active tracking
+    for id, inst in pairs(activeInstances) do
+        if inst == self then
+            activeInstances[id] = nil
+            break
+        end
+    end
+    self = nil
 end
 
 function module:AdjustWeight(weight: number,fadeTime: number)
