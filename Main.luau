@@ -8,7 +8,7 @@ local cframe_zero = CFrame.new(0,0,0)
 local PriorityTable = loadstring(game:HttpGet("https://raw.githubusercontent.com/NotXz3l/AnimationModule/refs/heads/main/Priority.luau"))()
 local ConvertToTable = loadstring(game:HttpGet("https://raw.githubusercontent.com/NotXz3l/AnimationModule/refs/heads/main/ConvertToTable.luau"))()
 local AutoGetMotor6D = loadstring(game:HttpGet("https://raw.githubusercontent.com/NotXz3l/AnimationModule/refs/heads/main/AutoGetMotor6D.luau"))()
-local GetFrameInBetween = loadstring(game:HttpGet("https://raw.githubusercontent.com/NotXz3l/AnimationModule/refs/heads/main/GetFrameinBetween.luau"))()
+local GetFrameInBetween = loadstring(game:HttpGet("https://raw.githubusercontent.com/NotXz3l/AnimationModule/refs/heads/main/GetFrameInBetween.luau"))()
 local GroupTamplate = loadstring(game:HttpGet("https://raw.githubusercontent.com/NotXz3l/AnimationModule/refs/heads/main/GroupTemplate.luau"))()
 local ReturnableTypes = loadstring(game:HttpGet("https://raw.githubusercontent.com/NotXz3l/AnimationModule/refs/heads/main/Priority.luau"))()
 
